@@ -1,0 +1,650 @@
+{
+  "paragraphs": [
+    {
+      "text": "%spark.pyspark\n#before starting make sure you download the csv file containing all Landsat 8 scenes (wget https://landsat-pds.s3.amazonaws.com/scene_list.gz), gunzip it and rename it to a csv file and make it available on hdfs through a shell: hdfs dfs -put scene_list.csv /user/hadoop/scene_list.csv",
+      "user": "anonymous",
+      "dateUpdated": "Nov 28, 2017 9:08:26 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/python"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Traceback (most recent call last):\n  File \"/tmp/zeppelin_pyspark-2807334018443839258.py\", line 349, in \u003cmodule\u003e\n    [code.body[-(nhooks + 1)]])\nIndexError: list index out of range\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1511859753027_56082907",
+      "id": "20171128-090233_1882385607",
+      "dateCreated": "Nov 28, 2017 9:02:33 AM",
+      "dateStarted": "Nov 28, 2017 9:08:26 AM",
+      "dateFinished": "Nov 28, 2017 9:08:26 AM",
+      "status": "ERROR",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark.pyspark\n# 1) load this into a spark dataframe\ndf \u003d spark.read.format(\"csv\").option(\"header\", \"true\").load(\"/user/hadoop/scene_list.csv\")",
+      "user": "anonymous",
+      "dateUpdated": "Nov 28, 2017 9:07:55 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {}
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "jobName": "paragraph_1511859999562_1575010791",
+      "id": "20171128-090639_1575764565",
+      "dateCreated": "Nov 28, 2017 9:06:39 AM",
+      "dateStarted": "Nov 28, 2017 9:07:55 AM",
+      "dateFinished": "Nov 28, 2017 9:07:55 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark.pyspark\n#2) check that the dataframe was correctly imported\ndf.show()",
+      "user": "anonymous",
+      "dateUpdated": "Nov 28, 2017 9:08:25 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/python"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "+--------------------+--------------------+----------+---------------+----+---+---------+----------+---------+----------+--------------------+\n|            entityId|     acquisitionDate|cloudCover|processingLevel|path|row|  min_lat|   min_lon|  max_lat|   max_lon|        download_url|\n+--------------------+--------------------+----------+---------------+----+---+---------+----------+---------+----------+--------------------+\n|LC80101172015002L...|2015-01-02 15:49:...|     80.81|           L1GT|  10|117|-79.09923|-139.66082| -77.7544|-125.09297|https://s3-us-wes...|\n|LC80260392015002L...|2015-01-02 16:56:...|     90.84|           L1GT|  26| 39| 29.23106| -97.48576| 31.36421| -95.16029|https://s3-us-wes...|\n|LC82270742015002L...|2015-01-02 13:53:...|     83.44|           L1GT| 227| 74|-21.28598| -59.27736|-19.17398| -57.07423|https://s3-us-wes...|\n|LC82270732015002L...|2015-01-02 13:52:...|     52.29|            L1T| 227| 73|-19.84365| -58.93258|-17.73324| -56.74692|https://s3-us-wes...|\n|LC82270622015002L...|2015-01-02 13:48:...|     38.85|            L1T| 227| 62| -3.95294| -55.38896| -1.84491| -53.32906|https://s3-us-wes...|\n|LC82111152015002L...|2015-01-02 12:30:...|     22.93|           L1GT| 211|115|-78.54179| -79.36148|-75.51003| -69.81645|https://s3-us-wes...|\n|LC81791202015002L...|2015-01-02 09:14:...|      7.67|           L1GT| 179|120|-82.84799| -65.43056|-79.86348| -54.33202|https://s3-us-wes...|\n|LC82111112015002L...|2015-01-02 12:28:...|     43.43|           L1GT| 211|111|-73.85499|   -65.855|-70.55727| -59.24916|https://s3-us-wes...|\n|LC81950292015002L...|2015-01-02 10:17:...|     21.02|            L1T| 195| 29| 43.48235|   5.34729| 45.65222|   8.42201|https://s3-us-wes...|\n|LC81790452015002L...|2015-01-02 08:44:...|      1.92|            L1T| 179| 45| 20.58917|  24.04269|  22.7141|  26.29556|https://s3-us-wes...|\n|LC81951112015002L...|2015-01-02 10:50:...|     81.56|           L1GT| 195|111|-73.58112| -40.43035|-70.84152| -35.08926|https://s3-us-wes...|\n|LC81950372015002L...|2015-01-02 10:20:...|       0.0|            L1T| 195| 37| 32.10532|   2.12162| 34.22813|   4.57813|https://s3-us-wes...|\n|LC81790442015002L...|2015-01-02 08:44:...|       0.0|            L1T| 179| 44| 22.03264|  24.37336| 24.15507|  26.64335|https://s3-us-wes...|\n|LC81790412015002L...|2015-01-02 08:43:...|     38.22|            L1T| 179| 41| 26.36084|  25.39824|   28.478|  27.73171|https://s3-us-wes...|\n|LC81951122015002L...|2015-01-02 10:50:...|      54.9|           L1GT| 195|112|-74.85997| -43.25487|-72.09281|  -37.6991|https://s3-us-wes...|\n|LC81790402015002L...|2015-01-02 08:42:...|     28.34|            L1T| 179| 40| 27.80228|  25.75171| 29.91661|  28.10655|https://s3-us-wes...|\n|LC81630432015002L...|2015-01-02 07:05:...|      1.57|            L1T| 163| 43| 23.48459|  49.44158| 25.59993|  51.71198|https://s3-us-wes...|\n|LC81630422015002L...|2015-01-02 07:04:...|      2.49|            L1T| 163| 42| 24.92613|  49.78208| 27.03865|  52.07355|https://s3-us-wes...|\n|LC81630402015002L...|2015-01-02 07:03:...|      1.13|            L1T| 163| 40| 27.80117|  50.48512| 29.91881|  52.81603|https://s3-us-wes...|\n|LC80900752015002L...|2015-01-02 23:46:...|      7.18|           L1GT|  90| 75|-22.72508|  152.0486|-20.61662| 154.28924|https://s3-us-wes...|\n+--------------------+--------------------+----------+---------------+----+---+---------+----------+---------+----------+--------------------+\nonly showing top 20 rows\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1511860032005_669173963",
+      "id": "20171128-090712_293772049",
+      "dateCreated": "Nov 28, 2017 9:07:12 AM",
+      "dateStarted": "Nov 28, 2017 9:08:04 AM",
+      "dateFinished": "Nov 28, 2017 9:08:05 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark.pyspark\n#Cloudcover is the probability a pixel is covered by the clouds. What values do you expect? Are there any values outside of this range? Does the data contain duplicates?\n#do a count before cleaning\ndf.count()\n#this returns 1059757",
+      "user": "anonymous",
+      "dateUpdated": "Nov 28, 2017 9:10:09 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "1059757\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1511860084792_1879886806",
+      "id": "20171128-090804_1214147508",
+      "dateCreated": "Nov 28, 2017 9:08:04 AM",
+      "dateStarted": "Nov 28, 2017 9:09:46 AM",
+      "dateFinished": "Nov 28, 2017 9:09:56 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark.pyspark\n#now remove the duplicates and the cloudcovers with negative values\ndf \u003d df.drop_duplicates()\ndf\u003ddf.filter(df[\"cloudCover\"]\u003e\u003d0)\ndf.count()\n#this leaevs us with 963826 records",
+      "user": "anonymous",
+      "dateUpdated": "Nov 28, 2017 9:11:11 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "963826\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1511860186348_2013348702",
+      "id": "20171128-090946_127552522",
+      "dateCreated": "Nov 28, 2017 9:09:46 AM",
+      "dateStarted": "Nov 28, 2017 9:10:53 AM",
+      "dateFinished": "Nov 28, 2017 9:11:03 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark.pyspark\n#Would it not be easy if we could just query on our data to get to know it better? Try to turn it in to a query-able format!\ndf.createOrReplaceTempView(\"scenes\")",
+      "user": "anonymous",
+      "dateUpdated": "Nov 28, 2017 9:11:24 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/python"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "jobName": "paragraph_1511860253680_-1598061005",
+      "id": "20171128-091053_1419228910",
+      "dateCreated": "Nov 28, 2017 9:10:53 AM",
+      "dateStarted": "Nov 28, 2017 9:11:25 AM",
+      "dateFinished": "Nov 28, 2017 9:11:25 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark.pyspark\n#The landsat 8 project started in 2013. Since when do we have data? Does it look like all the files are here?\noldest_acquisition \u003d spark.sql(\"SELECT min(acquisitionDate) FROM scenes \").show()\n#oldest acquisitiondate is 2013-04-11, so this looks ok",
+      "user": "anonymous",
+      "dateUpdated": "Nov 28, 2017 9:12:41 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/python"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "+--------------------+\n|min(acquisitionDate)|\n+--------------------+\n|2013-04-11 00:14:...|\n+--------------------+\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1511860284987_556794991",
+      "id": "20171128-091124_1260485871",
+      "dateCreated": "Nov 28, 2017 9:11:24 AM",
+      "dateStarted": "Nov 28, 2017 9:12:41 AM",
+      "dateFinished": "Nov 28, 2017 9:12:54 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark.pyspark\n#It is hard to find good satellite pictures of Belgium...always so cloudy!! Find the least cloudy day in Belgium of the last 3 years\nclear \u003d spark.sql(\"SELECT download_url FROM scenes where  path\u003d\u0027198\u0027 and row\u003d\u002724\u0027 order by cloudCover asc\").show(1,False)\n#the indexed image shows a compressed overviev of this clear day : https://s3-us-west-2.amazonaws.com/landsat-pds/L8/198/024/LC81980242015343LGN00/index.html\n#and compare this to the most cloudy day!\ncloudy \u003d spark.sql(\"SELECT download_url FROM scenes where  path\u003d\u0027198\u0027 and row\u003d\u002724\u0027 order by cloudCover desc\").show(1,False)",
+      "user": "anonymous",
+      "dateUpdated": "Nov 28, 2017 9:17:35 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "+------------------------------------------------------------------------------------------+\n|download_url                                                                              |\n+------------------------------------------------------------------------------------------+\n|https://s3-us-west-2.amazonaws.com/landsat-pds/L8/198/024/LC81980242015343LGN00/index.html|\n+------------------------------------------------------------------------------------------+\nonly showing top 1 row\n\n+------------------------------------------------------------------------------------------+\n|download_url                                                                              |\n+------------------------------------------------------------------------------------------+\n|https://s3-us-west-2.amazonaws.com/landsat-pds/L8/198/024/LC81980242014356LGN00/index.html|\n+------------------------------------------------------------------------------------------+\nonly showing top 1 row\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1511860323480_1447549992",
+      "id": "20171128-091203_1271010036",
+      "dateCreated": "Nov 28, 2017 9:12:03 AM",
+      "dateStarted": "Nov 28, 2017 9:17:35 AM",
+      "dateFinished": "Nov 28, 2017 9:17:54 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark.pyspark\n#Time for vacation...Select the average Cloudcover in Belgium and compare it to the one of the Costa Blanca. You can use for instance Benidorm\u0027s coordinates. \ndf_BE\u003d df[(df[\u0027path\u0027]\u003d\u003d198) \u0026 (df[\u0027row\u0027] \u003d\u003d 25)]\ndf_CostaBlanca\u003d df[(df[\u0027path\u0027]\u003d\u003d198) \u0026 (df[\u0027row\u0027] \u003d\u003d 33)]\nfrom pyspark.sql.functions import mean, min, max\ndf_BE.select([mean(\u0027cloudCover\u0027)]).show()\ndf_CostaBlanca.select([mean(\u0027cloudCover\u0027)]).show()",
+      "user": "anonymous",
+      "dateUpdated": "Nov 28, 2017 9:21:43 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/python"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "+-----------------+\n|  avg(cloudCover)|\n+-----------------+\n|56.08873563218391|\n+-----------------+\n\n+------------------+\n|   avg(cloudCover)|\n+------------------+\n|28.418636363636345|\n+------------------+\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1511860502828_-1935902832",
+      "id": "20171128-091502_1245283981",
+      "dateCreated": "Nov 28, 2017 9:15:02 AM",
+      "dateStarted": "Nov 28, 2017 9:21:43 AM",
+      "dateFinished": "Nov 28, 2017 9:21:55 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark.pyspark\n#July in Belgium is the sunniest month averaging 7 hours of sunshine... Can you get the average cloudcover in the month of July for all data available \nspark.sql(\"SELECT avg(cloudCover) FROM scenes where  path\u003d\u0027198\u0027 and row\u003d\u002724\u0027 and substring(acquisitionDate,6,2)\u003d\u002707\u0027 \").show(1)",
+      "user": "anonymous",
+      "dateUpdated": "Nov 28, 2017 9:23:57 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "+-------------------------------+\n|avg(CAST(cloudCover AS DOUBLE))|\n+-------------------------------+\n|                         44.905|\n+-------------------------------+\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1511860795075_346441323",
+      "id": "20171128-091955_1928442606",
+      "dateCreated": "Nov 28, 2017 9:19:55 AM",
+      "dateStarted": "Nov 28, 2017 9:23:57 AM",
+      "dateFinished": "Nov 28, 2017 9:24:10 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark.pyspark\n#In Southern California, two months (outside of the winter) are known to have a weather pattern that results in cloudy, overcast skies. This gives rise to appropriate nicknames for those months...Can you show the monthly average cloud covers, and find out what those two months are using the dataset available for the region around the city of San Diego?\nmonth_avg\u003dspark.sql(\"SELECT substring(acquisitionDate,6,2),round(avg(cloudCover)) FROM scenes where  path\u003d\u002740\u0027 and row\u003d\u002737\u0027 group by  substring(acquisitionDate,6,2) order by substring(acquisitionDate,6,2) asc\")\nmonth_avg.show()",
+      "user": "anonymous",
+      "dateUpdated": "Nov 28, 2017 9:28:58 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/python"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "+--------------------------------+-----------------------------------------+\n|substring(acquisitionDate, 6, 2)|round(avg(CAST(cloudCover AS DOUBLE)), 0)|\n+--------------------------------+-----------------------------------------+\n|                              01|                                     39.0|\n|                              02|                                     32.0|\n|                              03|                                     20.0|\n|                              04|                                     13.0|\n|                              05|                                     31.0|\n|                              06|                                     44.0|\n|                              07|                                     26.0|\n|                              08|                                     22.0|\n|                              09|                                     17.0|\n|                              10|                                     20.0|\n|                              11|                                     11.0|\n|                              12|                                     37.0|\n+--------------------------------+-----------------------------------------+\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1511860959230_-1507600685",
+      "id": "20171128-092239_477064101",
+      "dateCreated": "Nov 28, 2017 9:22:39 AM",
+      "dateStarted": "Nov 28, 2017 9:28:58 AM",
+      "dateFinished": "Nov 28, 2017 9:29:04 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark.pyspark\n#check that the table exists now\nconn.list_tables()",
+      "user": "anonymous",
+      "dateUpdated": "Nov 28, 2017 9:38:15 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "[u\u0027cloudcover\u0027]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1511861771619_347435226",
+      "id": "20171128-093611_903557630",
+      "dateCreated": "Nov 28, 2017 9:36:11 AM",
+      "dateStarted": "Nov 28, 2017 9:37:51 AM",
+      "dateFinished": "Nov 28, 2017 9:37:51 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark.pyspark\n#first change the schema names into something more readable\noldColumns \u003d month_avg.schema.names\nnewColumns \u003d [\"month\", \"cloudavg\"]\nmonth_avg \u003d reduce(lambda month_avg, idx: month_avg.withColumnRenamed(oldColumns[idx], newColumns[idx]), xrange(len(oldColumns)), month_avg)\nmonth_avg.printSchema()\nmonth_avg.show()",
+      "user": "anonymous",
+      "dateUpdated": "Nov 28, 2017 9:39:04 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/python"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "root\n |-- month: string (nullable \u003d true)\n |-- cloudavg: double (nullable \u003d true)\n\n+-----+--------+\n|month|cloudavg|\n+-----+--------+\n|   01|    39.0|\n|   02|    32.0|\n|   03|    20.0|\n|   04|    13.0|\n|   05|    31.0|\n|   06|    44.0|\n|   07|    26.0|\n|   08|    22.0|\n|   09|    17.0|\n|   10|    20.0|\n|   11|    11.0|\n|   12|    37.0|\n+-----+--------+\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1511861871152_-1987484900",
+      "id": "20171128-093751_545191871",
+      "dateCreated": "Nov 28, 2017 9:37:51 AM",
+      "dateStarted": "Nov 28, 2017 9:39:04 AM",
+      "dateFinished": "Nov 28, 2017 9:39:20 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark.pyspark\n#save the columns to a list that we will use to write the data to dynamo\nmonths \u003d month_avg.select(\u0027month\u0027).collect()\ncloudavgs \u003d month_avg.select(\u0027cloudavg\u0027).collect()",
+      "user": "anonymous",
+      "dateUpdated": "Nov 28, 2017 10:33:10 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/python"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "jobName": "paragraph_1511861944090_-463971200",
+      "id": "20171128-093904_396756255",
+      "dateCreated": "Nov 28, 2017 9:39:04 AM",
+      "dateStarted": "Nov 28, 2017 10:21:46 AM",
+      "dateFinished": "Nov 28, 2017 10:22:14 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark.pyspark\n#\nimport boto3\ndynamodb \u003d boto3.resource(\u0027dynamodb\u0027,region_name\u003d\u0027eu-west-1\u0027)\n",
+      "user": "anonymous",
+      "dateUpdated": "Nov 28, 2017 10:39:30 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "jobName": "paragraph_1511864982529_1957639653",
+      "id": "20171128-102942_1628662928",
+      "dateCreated": "Nov 28, 2017 10:29:42 AM",
+      "dateStarted": "Nov 28, 2017 10:39:30 AM",
+      "dateFinished": "Nov 28, 2017 10:39:30 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark.pyspark\n#create a table\ntable \u003d dynamodb.create_table(\n    TableName\u003d\u0027cloudcover\u0027,\n    KeySchema\u003d[\n        {\n            \u0027AttributeName\u0027: \u0027User\u0027,\n            \u0027KeyType\u0027: \u0027HASH\u0027\n        },\n        {\n            \u0027AttributeName\u0027: \u0027CreationTiming\u0027,\n            \u0027KeyType\u0027: \u0027RANGE\u0027\n        }\n    ],\n    AttributeDefinitions\u003d[\n        {\n            \u0027AttributeName\u0027: \u0027User\u0027,\n            \u0027AttributeType\u0027: \u0027S\u0027\n        },\n        {\n            \u0027AttributeName\u0027: \u0027CreationTiming\u0027,\n            \u0027AttributeType\u0027: \u0027S\u0027\n        },\n\n    ],\n    ProvisionedThroughput\u003d{\n        \u0027ReadCapacityUnits\u0027: 5,\n        \u0027WriteCapacityUnits\u0027: 5\n    }\n)\n\n# Wait until the table exists.\ntable.meta.client.get_waiter(\u0027table_exists\u0027).wait(TableName\u003d\u0027cloudcover\u0027)\n\n# Print out some data about the table.\nprint(table.item_count)",
+      "user": "anonymous",
+      "dateUpdated": "Nov 28, 2017 10:39:42 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/python"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "0\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1511865327284_-228199282",
+      "id": "20171128-103527_1655793878",
+      "dateCreated": "Nov 28, 2017 10:35:27 AM",
+      "dateStarted": "Nov 28, 2017 10:39:42 AM",
+      "dateFinished": "Nov 28, 2017 10:40:02 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark.pyspark\n#now write all averages to the table\nfrom datetime import datetime\nwith table.batch_writer() as batch:\n    for i in range(12):\n       rightnow \u003d datetime.now()\n       batch.put_item(Item\u003d{\n        \u0027User\u0027: \u0027Joris\u0027,\n         \u0027CreationTiming\u0027: str(rightnow),\n         \u0027cloudavg\u0027:str(cloudavgs[i][0]),\n         \u0027month\u0027:  months[i][0],\n         \u0027path\u0027 : \u002740\u0027, \n         \u0027row\u0027 : \u002737\u0027\n     })",
+      "user": "anonymous",
+      "dateUpdated": "Nov 28, 2017 10:52:14 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "jobName": "paragraph_1511865582399_68040403",
+      "id": "20171128-103942_649763070",
+      "dateCreated": "Nov 28, 2017 10:39:42 AM",
+      "dateStarted": "Nov 28, 2017 10:52:14 AM",
+      "dateFinished": "Nov 28, 2017 10:52:14 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark.pyspark\n#check that table contains the wanted items\nresponse \u003d table.scan()\nitems \u003d response[\u0027Items\u0027]\nprint(items)",
+      "user": "anonymous",
+      "dateUpdated": "Nov 28, 2017 10:53:37 AM",
+      "config": {
+        "colWidth": 12.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "[{u\u0027month\u0027: u\u002701\u0027, u\u0027User\u0027: u\u0027Joris\u0027, u\u0027CreationTiming\u0027: u\u00272017-11-28 10:52:14.849506\u0027, u\u0027path\u0027: u\u002740\u0027, u\u0027cloudavg\u0027: u\u002739.0\u0027, u\u0027row\u0027: u\u002737\u0027}, {u\u0027month\u0027: u\u002702\u0027, u\u0027User\u0027: u\u0027Joris\u0027, u\u0027CreationTiming\u0027: u\u00272017-11-28 10:52:14.849556\u0027, u\u0027path\u0027: u\u002740\u0027, u\u0027cloudavg\u0027: u\u002732.0\u0027, u\u0027row\u0027: u\u002737\u0027}, {u\u0027month\u0027: u\u002703\u0027, u\u0027User\u0027: u\u0027Joris\u0027, u\u0027CreationTiming\u0027: u\u00272017-11-28 10:52:14.849575\u0027, u\u0027path\u0027: u\u002740\u0027, u\u0027cloudavg\u0027: u\u002720.0\u0027, u\u0027row\u0027: u\u002737\u0027}, {u\u0027month\u0027: u\u002704\u0027, u\u0027User\u0027: u\u0027Joris\u0027, u\u0027CreationTiming\u0027: u\u00272017-11-28 10:52:14.849592\u0027, u\u0027path\u0027: u\u002740\u0027, u\u0027cloudavg\u0027: u\u002713.0\u0027, u\u0027row\u0027: u\u002737\u0027}, {u\u0027month\u0027: u\u002705\u0027, u\u0027User\u0027: u\u0027Joris\u0027, u\u0027CreationTiming\u0027: u\u00272017-11-28 10:52:14.849608\u0027, u\u0027path\u0027: u\u002740\u0027, u\u0027cloudavg\u0027: u\u002731.0\u0027, u\u0027row\u0027: u\u002737\u0027}, {u\u0027month\u0027: u\u002706\u0027, u\u0027User\u0027: u\u0027Joris\u0027, u\u0027CreationTiming\u0027: u\u00272017-11-28 10:52:14.849624\u0027, u\u0027path\u0027: u\u002740\u0027, u\u0027cloudavg\u0027: u\u002744.0\u0027, u\u0027row\u0027: u\u002737\u0027}, {u\u0027month\u0027: u\u002707\u0027, u\u0027User\u0027: u\u0027Joris\u0027, u\u0027CreationTiming\u0027: u\u00272017-11-28 10:52:14.849641\u0027, u\u0027path\u0027: u\u002740\u0027, u\u0027cloudavg\u0027: u\u002726.0\u0027, u\u0027row\u0027: u\u002737\u0027}, {u\u0027month\u0027: u\u002708\u0027, u\u0027User\u0027: u\u0027Joris\u0027, u\u0027CreationTiming\u0027: u\u00272017-11-28 10:52:14.849656\u0027, u\u0027path\u0027: u\u002740\u0027, u\u0027cloudavg\u0027: u\u002722.0\u0027, u\u0027row\u0027: u\u002737\u0027}, {u\u0027month\u0027: u\u002709\u0027, u\u0027User\u0027: u\u0027Joris\u0027, u\u0027CreationTiming\u0027: u\u00272017-11-28 10:52:14.849671\u0027, u\u0027path\u0027: u\u002740\u0027, u\u0027cloudavg\u0027: u\u002717.0\u0027, u\u0027row\u0027: u\u002737\u0027}, {u\u0027month\u0027: u\u002710\u0027, u\u0027User\u0027: u\u0027Joris\u0027, u\u0027CreationTiming\u0027: u\u00272017-11-28 10:52:14.849687\u0027, u\u0027path\u0027: u\u002740\u0027, u\u0027cloudavg\u0027: u\u002720.0\u0027, u\u0027row\u0027: u\u002737\u0027}, {u\u0027month\u0027: u\u002711\u0027, u\u0027User\u0027: u\u0027Joris\u0027, u\u0027CreationTiming\u0027: u\u00272017-11-28 10:52:14.849703\u0027, u\u0027path\u0027: u\u002740\u0027, u\u0027cloudavg\u0027: u\u002711.0\u0027, u\u0027row\u0027: u\u002737\u0027}, {u\u0027month\u0027: u\u002712\u0027, u\u0027User\u0027: u\u0027Joris\u0027, u\u0027CreationTiming\u0027: u\u00272017-11-28 10:52:14.849718\u0027, u\u0027path\u0027: u\u002740\u0027, u\u0027cloudavg\u0027: u\u002737.0\u0027, u\u0027row\u0027: u\u002737\u0027}]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1511865733966_-1348438126",
+      "id": "20171128-104213_314678163",
+      "dateCreated": "Nov 28, 2017 10:42:13 AM",
+      "dateStarted": "Nov 28, 2017 10:53:13 AM",
+      "dateFinished": "Nov 28, 2017 10:53:13 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark.pyspark\n",
+      "user": "anonymous",
+      "dateUpdated": "Nov 28, 2017 10:43:19 AM",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1511865799851_-2136111069",
+      "id": "20171128-104319_464358354",
+      "dateCreated": "Nov 28, 2017 10:43:19 AM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "htf2017",
+  "id": "2D2QU3P5V",
+  "angularObjects": {
+    "2BRWU4WXC:shared_process": [],
+    "2AM1YV5CU:shared_process": [],
+    "2AJXGMUUJ:shared_process": [],
+    "2ANGGHHMQ:shared_process": [],
+    "2AKK3QQXU:shared_process": []
+  },
+  "config": {},
+  "info": {}
+}

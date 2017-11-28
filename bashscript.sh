@@ -16,3 +16,4 @@ yes yes | conda install geos=3.4.2
 yes yes | conda install xerces-c=3.1
 yes yes | conda install gdal
 yes yes | conda install poppler
+yes yes | conda install boto3

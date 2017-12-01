@@ -1,0 +1,186 @@
+GET FILES from s3 commands for Linux AMI:
+------------------------------------------
+aws s3 cp s3://nasanex/Landsat/gls/2000/044/034/p044r034_7x19990707.tar.gz SF.tar.gz
+aws s3 cp s3://nasanex/Landsat/gls/2010/198/024/LT51980242010249KIS01.tar.gz    /home/hadoop/data/Antwerp.tar.gz
+
+see all available images:
+aws s3 ls s3://landsat-pds/L8/044/034/
+
+aws s3 cp s3://landsat-pds/L8/139/045/LC81390452014327LGN00/LC81390452014327LGN00_B7.TIF.ovr /home/hadoop/data/LC81390452014327LGN00_B7.TIF.ovr
+aws s3 cp s3://landsat-pds/L8/139/045/LC81390452014327LGN00/LC81390452014327LGN00_B5.TIF.ovr /home/hadoop/data/LC81390452014327LGN00_B5.TIF.ovr
+aws s3 cp s3://landsat-pds/L8/139/045/LC81390452014327LGN00/LC81390452014327LGN00_B3.TIF.ovr /home/hadoop/data/LC81390452014327LGN00_B3.TIF.ovr
+
+
+
+TEST IF SPARK WORKS
+--------------------
+sc 
+textfile = sc.textFile("s3://elasticmapreduce/samples/hive-ads/tables/impressions/dt=2009-04-13-08-05/ec2-0-51-75-39.amazon.com-2009-04-13-08-05.log")
+linesWithCartoonNetwork = textfile.filter(lambda line: "cartoonnetwork.com" in line).count()
+linesWithCartoonNetwork 
+should return 9
+
+Simple cloudcover Study using pandas df (in regular python not on spark)
+-------------------------------------------------------------------------
+import data
+import pandas as pd
+#create dateframe
+df = pd.read_csv('scene_list.csv',header=0)
+df.columns.tolist()
+
+#Look at the data? Is there any need for cleaning?
+df_unique=df.drop_duplicates()
+
+
+df.cloudCover
+#Antwerp Latitude =51.2192 ;Antwerp Longitude =4.4029 -> path= 198; Row=24
+df_BE= df_unique.ix[(df_unique['path']==198) & (df_unique['row'] == 24)]
+df_BE['cloudCover'].mean()
+#returns 58.093600000000009
+#Costa Blanca: Path: 198 Row: 33 
+df_Benidorm= df_unique.ix[(df_unique['path']==198) & (df_unique['row'] == 33)]
+#returns average cloudcover of 23.50
+#Sunniest/cloudiest place on the planet?
+df_world = df_unique.groupby(['path','row'], as_index=False)['cloudCover'].mean()
+#Check if you get the same value for Belgium...
+df_world.ix[(df_world['path']==198) & (df_world['row'] == 24)]
+-------------------------------------------------------
+And now do this on EMR using pyspark instead of python!
+-------------------------------------------------------
+#1)download file to the master node , unzip it and rename to csv file
+wget https://landsat-pds.s3.amazonaws.com/scene_list.gz
+gunzip scene_list.gz;mv scene_list scene_list.csv
+#2)make a folder for your team name and put the file on hdfs:
+hdfs dfs -put scene_list.csv /user/hadoop/JOB/scene_list.csv
+#3) load this into a spark dataframe
+df = spark.read.format("csv").option("header", "true").load("/user/hadoop/JOB/scene_list.csv")
+#4)Cloudcover is the probability a pixel is covered by the clouds. What values do you expect? Are there any values outside of this range? Does the data contain duplicates?
+df.count() returns 1059757
+df = df.drop_duplicates() 
+df.count() returns 976076
+#5) Only select data with cloudCover >0 
+df=df.filter(df["cloudCover"]>=0)
+#6)Would it not be easy if we could just query on our data to get to know it better? Try to turn it in to a query-able format!
+df.createOrReplaceTempView("scenes")
+#7)The landsat 8 project started in 2013. Since when do we have data? Does it look like all the files are here?
+sqlDF = spark.sql("SELECT min(acquisitionDate) FROM scenes ").show()
+#8)It is hard to find good satellite pictures of Belgium...always so cloudy!! Find the least cloudy day in Belgium of the last 3 years
+sqlDF = spark.sql("SELECT * FROM scenes where  path='198' and row='24' order by cloudCover asc").show(1)
+#-> https://s3-us-west-2.amazonaws.com/landsat-pds/L8/198/024/LC81980242015343LGN00/LC81980242015343LGN00_thumb_large.jpg
+#and compare this to the most cloudy day!
+#-> http://s3-us-west-2.amazonaws.com/landsat-pds/L8/198/024/LC81980242014356LGN00/LC81980242014356LGN00_thumb_large.jpg
+#What a difference!
+#9)Time for vacation...Select the average Cloudcover in Belgium and compare it to the one of the Costa Blanca. You can use for instance Benidorm's coordinates. 
+#10)Select the average Cloudcover in Belgium Versus Costa Blanca
+df_BE= df[(df['path']==198) & (df['row'] == 25)]
+df_CostaBlanca= df[(df['path']==198) & (df['row'] == 33)]
+#11) Now calculate the average
+from pyspark.sql.functions import mean, min, max
+df_BE.select([mean('cloudCover'), min('cloudCover'), max('cloudCover')]).show()
+df_CostaBlanca.select("cloudCover").describe().show()
+#12)July in Belgium is the sunniest month averaging 7 hours of sunshine... Can you get the average cloudcover in the month of July for all data available 
+spark.sql("SELECT avg(cloudCover) FROM scenes where  path='198' and row='24' and substring(acquisitionDate,6,2)='07' ").show(1)
+spark.sql("SELECT * FROM scenes where  path='198' and row='24' and substring(acquisitionDate,6,2)='07' ").show()
+#13)Can you get the cloudcover averages per month...in just 1 command line?
+#In Southern California, two months (outside of the winter) are known to have a weather pattern that results in cloudy, overcast skies. This gives rise to appropriate nicknames for those months...
+#Can you show the monthly average cloud covers, and find out what those two months are using the dataset available for the region around the city of San Diego?
+month_avg=spark.sql("SELECT substring(acquisitionDate,6,2),round(avg(cloudCover)) FROM scenes where  path='40' and row='37' group by  substring(acquisitionDate,6,2) order by substring(acquisitionDate,6,2) asc")
+
+Use of dynamodb through python's SDK BOTO
+-----------------------------------------
+#check out the tutorial at  http://boto3.readthedocs.io/en/latest/guide/dynamodb.html
+pyspark
+rightnow = datetime.now()
+#first change the schema names into something more readable
+oldColumns = month_avg.schema.names
+newColumns = ["month", "cloudavg"]
+month_avg = reduce(lambda month_avg, idx: month_avg.withColumnRenamed(oldColumns[idx], newColumns[idx]), xrange(len(oldColumns)), month_avg)
+month_avg.printSchema()
+month_avg.show()
+#save the columns to a list that we will use to write the data to dynamo
+months = month_avg.select('month').collect()
+cloudavgs = month_avg.select('cloudavg').collect()
+import boto3
+
+dynamodb = boto3.resource('dynamodb',region_name='eu-west-1')
+#create a table
+ 
+table = dynamodb.create_table(
+    TableName='cloudcover',
+    
+KeySchema=[
+        {
+            
+'AttributeName': 'CreationTiming',
+            
+'KeyType': 'HASH'
+        },
+        
+{
+            'AttributeName': 'Teamname',
+            
+'KeyType': 'RANGE'
+        }
+    ],
+    
+AttributeDefinitions=[
+        {
+            
+'AttributeName': 'Teamname',
+            
+'AttributeType': 'S'
+        },
+        
+{
+            'AttributeName': 'CreationTiming',
+            
+'AttributeType': 'S'
+        },
+
+    ],
+    
+ProvisionedThroughput={
+        
+'ReadCapacityUnits': 5,
+        'WriteCapacityUnits': 5
+    }
+)
+
+# Wait until the table exists
+exists.
+table.meta.client.get_waiter('table_exists').wait(TableName='cloudcover')
+
+
+# Print out some data about the table
+table.
+print(table.item_count)
+#now write all averages to the table
+
+from datetime import datetime
+
+with table.batch_writer() as batch:
+    
+   for i in range(12):
+       
+      rightnow = datetime.now()
+       
+      batch.put_item(Item={
+        
+      'Teamname': 'Joris',
+         
+      'CreationTiming': str(rightnow),
+         
+      'cloudavg':str(cloudavgs[i][0]),
+         
+      'month':  months[i][0],
+         
+      'path' : '40', 
+         
+      'row' : '37'
+     })
+#check that table contains the wanted items
+
+response = table.scan()
+
+items = response['Items']
+print(items)

@@ -1,4 +1,4 @@
-# htf2017
+e# htf2017
 This file contains the information of a big data challenge at a hackaton event that we organized together with Liam De Lee. This is an event to introduce students with no prior experience to the big data domain by giving them hands-on experience on AWS. THe dataset used is the landsat 8 satellite data set containing over 1 million images and the csv file containing the metadata of these images (see pdf for the exact steps in this lab). 
 ## Setting up the EMR cluster
 We will spin up an EMR cluster m3xlarge consisting of 1 master node and 2 slaves. We choose the installation that includes Hadoop 2.7.3- Zeppelin 0.7.3 (notbook) and Ganglia 3.7.2 (for monitoring the memory use of the cluster), and Spark 2.2.0(the parallel computing framework).To install all necessary python package,  bootstrapping script is used. We were charged for this cluster and found the charges to be about 0.75 $/hour- so around 10$ / day of work.
@@ -15,7 +15,7 @@ THe json extract from the zeppelin notebook that was used to fire off the pyspar
 A python code that makes use of the gdal libraries installed by the bootstrapping script to show a satellite image of Antwerp. Note that when working under Windows an xming installation is required.
 ## Lessons learned
 Here are some lessons we learned as organizers that we would to share for possible future events
-1. Spend a lot of time picking a correct dataset that has some potential.
+1. Spend a lot of time picking a correct dataset that has some potential for eploration.
 2. Have an overview of the results ready. If there are teams that are less experienced or there are technical problems and the system is down, the students can already study the results.
 3. To send the jobs to the cluster, a decent internet connection is necessary. If several teams are working together, this could caus issues. If necessary spin up a second cluster (we had 1 cluster for 7 teams).
 ## Acknowledgements

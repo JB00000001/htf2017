@@ -15,8 +15,8 @@ THe json extract from the zeppelin notebook that was used to fire off the pyspar
 A python code that makes use of the gdal libraries installed by the bootstrapping script to show a satellite image of Antwerp. Note that when working under Windows an xming installation is required.
 ## Lessons learned
 Here are some lessons we learned as organizers that we would to share for possible future events
-#### Spend a lot of time picking a correct dataset that has some potential.
-#### Have an overview of the results ready. If there are teams that are less experienced or there are technical problems and the system is down, the students can already study the results.
-#### To send the jobs to the cluster, a decent internet connection is necessary. If several teams are working together, this could caus issues. If necessary spin up a second cluster (we had 1 cluster for 7 teams).
+1 Spend a lot of time picking a correct dataset that has some potential.
+2 Have an overview of the results ready. If there are teams that are less experienced or there are technical problems and the system is down, the students can already study the results.
+3 To send the jobs to the cluster, a decent internet connection is necessary. If several teams are working together, this could caus issues. If necessary spin up a second cluster (we had 1 cluster for 7 teams).
 ## Acknowledgements
 I want to explicitly talk Liam De Lee for installing the necessary python libraries and sharing his AWS skills to set up the EMR cluster.

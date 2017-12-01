@@ -19,4 +19,4 @@ Here are some lessons we learned as organizers that we would to share for possib
 2. Have an overview of the results ready. If there are teams that are less experienced or there are technical problems and the system is down, the students can already study the results.
 3. To send the jobs to the cluster, a decent internet connection is necessary. If several teams are working together, this could caus issues. If necessary spin up a second cluster (we had 1 cluster for 7 teams).
 ## Acknowledgements
-I want to explicitly talk Liam De Lee for installing the necessary python libraries and sharing his AWS skills to set up the EMR cluster.
+I want to explicitly thank Liam De Lee for installing the necessary python libraries and sharing his AWS skills to set up the EMR cluster.
